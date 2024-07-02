@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="" />
+  </head>
+  <body>
+    <input type="text" id="count" value="0" />
+    <input type="button" id="btn2" value="1증가" />
+    <input type="file" name="" id="" />
+  </body>
+  <script>
+    document.write(
+      "<h2 id='wrt'>브라우저에서 자바스크립트 명령을 실행하여 body에 출력한다</h2>",
+      "<input type='text' id='inputText'>",
+      "<input type='button' value='Button' id='btn'>"
+    );
+
+    $wrt = document.getElementById("wrt");
+    document.getElementById("btn").addEventListener("click", () => {
+      $wrt.innerText = "";
+      $wrt.innerText = document.getElementById("inputText").value;
+    });
+    // $btn.addEventListener("click", () => {
+    //   fetch("localhost:5500/01_JavaScript")
+    //     .then((res) => {
+    //       if (res.ok) {
+    //       }
+    //     })
+    //     .then((data) => {})
+    //     .catch((err) => {});
+    // });
+
+    $count = document.getElementById("count");
+    $btn2 = document.getElementById("btn2");
+    $btn2.addEventListener("click", () => {
+      let count = Number($count.value);
+      count++;
+      $count.value = count;
+    });
+  </script>
+</html>

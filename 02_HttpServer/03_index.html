@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03_index.html</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" id="userid" />
+      <button type="submit" id="sBtn">등록</button>
+    </form>
+    <script>
+      $form = document.getElementById("form");
+      $btn = document.getElementById("sBtn");
+      $form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!this.userid.value) {
+          return alert("아이디를 입력하세요");
+        }
+
+        try {
+          // post 방식으로 서버에 요청
+          await axios.post("/user", { userid: this.userid.value });
+        } catch (err) {}
+        this.userid.value = "";
+        this.userid.focus();
+      });
+    </script>
+  </body>
+</html>

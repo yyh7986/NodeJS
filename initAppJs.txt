@@ -1,0 +1,28 @@
+// npm init
+// npm i express nodemon cookie-parser express-session
+// npm start
+// "start": "nodemon app",
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: "abcd", // 암호화 코드
+  })
+);
+app.set("port", process.env.PORT || 3000);
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/index.html"));
+});
+
+app.listen(app.get("port"), () => {
+  console.log(app.get("port"), "port ::: Server Open");
+});
