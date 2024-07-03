@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/board.css" />
+  </head>
+  <body>
+    <form class="login-form" method="post" name="login" id="login-form">
+      <h2>Login</h2>
+      <div class="field">
+        <label>User ID</label
+        ><input type="text" name="userid" value="" id="userid" />
+      </div>
+      <div class="field">
+        <label>Password</label><input type="password" name="pwd" id="pwd" />
+      </div>
+      <div class="field" id="message"></div>
+      <div class="login-button">
+        <input type="submit" class="btn-login" value="log in" />
+        <input
+          type="button"
+          class="btn-login"
+          value="join"
+          onclick="location.href='/members/joinForm'"
+        />
+      </div>
+      <div class="sns-login">
+        <input type="button" class="btn facebook" value="Facebook" />
+        <input type="button" class="btn twitter" value="Twitter" />
+        <input type="button" class="btn google" value="Google" />
+        <input type="button" class="btn kakao" value="Kakao" />
+      </div>
+    </form>
+    <script>
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const userid = e.target.userid.value;
+          const pwd = e.target.pwd.value;
+          if (!userid) {
+            return alert("아이디를 입력하세요");
+          }
+          if (!pwd) {
+            return alert("비밀번호를 입력하세요");
+          }
+          try {
+            const result = await axios.post("/members/login", { userid, pwd });
+            const msg = result.data.msg;
+            if (msg == "ok") {
+              location.href = "/boards/boardList";
+            } else {
+              document.getElementById("message").innerHTML = msg;
+            }
+          } catch (err) {}
+          e.target.pwd.value = "";
+        });
+    </script>
+  </body>
+</html>

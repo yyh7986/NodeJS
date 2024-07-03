@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/board.css" />
+  </head>
+  <body>
+    <form name="update" class="login-form" method="post" id="update-form">
+      <h2>Update Member</h2>
+      <div class="field">
+        <label>User ID</label>
+        <input type="text" id="userid" readonly />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="pwd" />
+      </div>
+      <div class="field">
+        <label>Retype Pw</label>
+        <input type="password" id="pwd_check" />
+      </div>
+      <div class="field">
+        <label>name</label><input type="text" id="username" />
+      </div>
+      <div class="field">
+        <label>Email</label><input type="text" id="email" />
+      </div>
+      <div class="field">
+        <label>Phone</label><input type="text" id="phone" />
+      </div>
+      <div class="login-button">
+        <input type="submit" class="btn-login" value="Update" />
+        <input
+          type="button"
+          class="btn-login"
+          value="Back"
+          onClick="location.href='/board/boardList'"
+        />
+      </div>
+    </form>
+    <script>
+      getUserInfo();
+
+      async function getUserInfo() {
+        try {
+          const result = await axios.get("/loginUser");
+          const loginUser = result.data;
+          document.getElementById("userid").value = loginUser.userid;
+          document.getElementById("username").value = loginUser.name;
+          document.getElementById("email").value = loginUser.email;
+          document.getElementById("phone").value = loginUser.phone;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      document
+        .getElementById("update-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const userid = e.target.userid.value;
+          const pwd = e.target.pwd.value;
+          const pwd_chk = e.target.pwd_check.value;
+          const name = e.target.username.value;
+          const email = e.target.email.value;
+          const phone = e.target.phone.value;
+
+          if (!pwd) {
+            return alert("비밀번호를 입력하세요");
+          }
+          if (!name) {
+            return alert("이름을 입력하세요");
+          }
+          if (!email) {
+            return alert("이메일을 입력하세요");
+          }
+          if (!phone) {
+            return alert("전화번호를 입력하세요");
+          }
+          if (pwd != pwd_chk) {
+            return alert("비밀번호 확인이 일치하지 않음");
+          }
+          try {
+            await axios.post("/members/update", {
+              userid,
+              pwd,
+              name,
+              email,
+              phone,
+            });
+            location.href = "/boards/boardList";
+          } catch (error) {
+            console.error(err);
+          }
+        });
+    </script>
+  </body>
+</html>

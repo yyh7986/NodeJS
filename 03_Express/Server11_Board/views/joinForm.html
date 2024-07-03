@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/board.css" />
+  </head>
+  <body>
+    <form
+      name="join"
+      class="login-form"
+      action="join"
+      method="post"
+      id="join-form"
+    >
+      <h2>Join</h2>
+      <div class="field">
+        <label>User ID</label>
+        <input style="flex: 2" type="text" name="userid" id="userid" />
+        <input style="flex: 1" type="button" value="ID Check" id="idcheck" />
+        <span style="flex: 1" id="idOk"></span>
+        <input type="hidden" id="reid" />
+      </div>
+      <div class="field">
+        <label>Password</label><input type="password" id="pwd" />
+      </div>
+      <div class="field">
+        <label>Retype Pw</label><input type="password" id="pwd_check" />
+      </div>
+      <div class="field">
+        <label>name</label><input type="text" id="name" name="username" />
+      </div>
+      <div class="field">
+        <label>Email</label><input type="text" id="email" />
+      </div>
+      <div class="field">
+        <label>Phone</label><input type="text" id="phone" />
+      </div>
+      <div class="field"><label id="message"></label></div>
+      <div class="login-button">
+        <input type="submit" class="btn-login" value="Join" />
+        <input
+          type="button"
+          class="btn-login"
+          value="Back"
+          onClick="location.href='/'"
+        />
+      </div>
+    </form>
+    <script>
+      document
+        .getElementById("idcheck")
+        .addEventListener("click", async (e) => {
+          // console.log("e : ", e);
+          // console.log("this : ", this);
+          const userid = document.join.userid.value;
+          if (!userid) {
+            return alert("조회할 아이디를 입력하세요");
+          }
+          try {
+            const result = await axios.post("/members/idcheck", { userid });
+            const id = result.data.id;
+            if (id == "0") {
+              document.getElementById("idOk").innerHTML = "사용가능한 아이디";
+              document.getElementById("idOk").style.color = "blue";
+              document.getElementById("reid").value = "ok";
+            } else {
+              document.getElementById("idOk").innerHTML =
+                "이미 사용중인 아이디";
+              document.getElementById("idOk").style.color = "red";
+              document.getElementById("reid").value = "";
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        });
+
+      document
+        .getElementById("join-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const userid = e.target.userid.value;
+          const pwd = e.target.pwd.value;
+          const pwd_chk = e.target.pwd_check.value;
+          const name = e.target.username.value;
+          const email = e.target.email.value;
+          const phone = e.target.phone.value;
+          const reid = e.target.reid.value;
+
+          if (!userid) {
+            return alert("아이디를 입력하세요");
+          }
+          if (!pwd) {
+            return alert("비밀번호를 입력하세요");
+          }
+          if (!name) {
+            return alert("이름을 입력하세요");
+          }
+          if (!email) {
+            return alert("이메일을 입력하세요");
+          }
+          if (!phone) {
+            return alert("전화번호를 입력하세요");
+          }
+          if (pwd != pwd_chk) {
+            return alert("비밀번호 확인이 일치하지 않음");
+          }
+          if (!reid) {
+            return alert("아이디 중복체크를 진행하세요");
+          }
+
+          try {
+            const result = await axios.post("/members/join", {
+              userid,
+              pwd,
+              name,
+              email,
+              phone,
+            });
+            alert(result.data.msg);
+            location.href = "/";
+          } catch (error) {
+            console.error(err);
+          }
+        });
+      r;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/board.css" />
+  </head>
+  <body>
+    <div id="main_container">
+      <h2>게시글 리스트</h2>
+      <div class="logininfo">
+        <div class="login">
+          <span id="loginUser"></span>
+          님이 로그인하셨습니다
+          <input
+            type="button"
+            value="회원정보수정"
+            onClick="location.href='/members/updateForm'"
+          />
+          <input
+            type="button"
+            value="로그아웃"
+            onClick="location.href='/members/logout'"
+          />
+          <input type="button" value="회원탈퇴" onClick="" />
+        </div>
+        <div class="writebutton">
+          <input type="button" value="게시글 등록" onClick="" />
+        </div>
+      </div>
+
+      <div class="board" id="board">
+        <div class="title_row">
+          <div class="title_col">번호</div>
+          <div class="title_col">제목</div>
+          <div class="title_col">작성자</div>
+          <div class="title_col">작성일</div>
+          <div class="title_col">조회수</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      getLoginUser();
+
+      async function getLoginUser() {
+        try {
+          const result = await axios.get("/loginUser");
+          const loginUser = result.data;
+          document.getElementById("loginUser").innerHTML =
+            loginUser.userid + "(" + loginUser.name + ")";
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    </script>
+  </body>
+</html>
