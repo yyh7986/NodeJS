@@ -2,6 +2,7 @@
 // npm i express nodemon cookie-parser express-session
 // npm start
 // "start": "nodemon app",
+// <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");

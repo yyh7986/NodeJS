@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <form action="" id="form" method="post" enctype="multipart/form-data">
@@ -13,7 +14,18 @@
     </form>
     <br /><br />
     <script>
-      document.getElementById("form").addEventListener("submit", () => {});
+      document.getElementById("form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("title", this.title.value);
+        formData.append("image", this.image.files[0]);
+        try {
+          const result = await axios.post("/upload", formData);
+          // 되돌아온 데이터들을 이용해서 방금 업로드한 이미지를 아래에 표시할 예정
+        } catch (err) {}
+        this.image.value = "";
+        this.title.value = "";
+      });
     </script>
   </body>
 </html>
