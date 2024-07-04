@@ -139,4 +139,15 @@ router.post("/update", async (req, res) => {
   } catch (error) {}
 });
 
+router.delete("/deleteMember/:userid", async (req, res, next) => {
+  const sql = "DELETE FROM member WHERE userid=?";
+  try {
+    const connection = await getConnection();
+    const [result, fields] = await connection.query(sql, [req.params.userid]);
+    res.send("ok");
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

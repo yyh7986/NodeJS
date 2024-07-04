@@ -24,25 +24,75 @@
             value="로그아웃"
             onClick="location.href='/members/logout'"
           />
-          <input type="button" value="회원탈퇴" onClick="" />
+          <input type="button" id="deleteMember" value="회원탈퇴" />
         </div>
         <div class="writebutton">
-          <input type="button" value="게시글 등록" onClick="" />
+          <input
+            type="button"
+            value="게시글 등록"
+            onClick="location.href='/boards/boardWriteForm'"
+          />
         </div>
       </div>
 
-      <div class="board" id="board">
-        <div class="title_row">
-          <div class="title_col">번호</div>
-          <div class="title_col">제목</div>
-          <div class="title_col">작성자</div>
-          <div class="title_col">작성일</div>
-          <div class="title_col">조회수</div>
-        </div>
+      <div class="title_row">
+        <div class="title_col">번호</div>
+        <div class="title_col">제목</div>
+        <div class="title_col">작성자</div>
+        <div class="title_col">작성일</div>
+        <div class="title_col">조회수</div>
+      </div>
+      <div class="board" id="boardList">
+        <!-- 게시물이 표시되는 곳 -->
       </div>
     </div>
     <script>
       getLoginUser();
+      getBoardList();
+
+      async function getBoardList() {
+        try {
+          const result = await axios.get("/boards/boards");
+          const boards = result.data;
+          // console.log(boards[0]);
+
+          let boardList = document.querySelector("#boardList");
+          boardList.innerHTML = "";
+
+          boards.map((board, idx) => {
+            // boards 배열의 요소들을 board 변수에 저장하면서 배열의 요소 갯수만큼 반복실행
+            let row = document.createElement("div");
+            row.className = "row";
+            boardList.appendChild(row);
+
+            let num = document.createElement("div");
+            num.className = "col";
+            num.textContent = board.num;
+
+            let title = document.createElement("div");
+            title.className = "col";
+            title.textContent = board.title;
+
+            title.addEventListener("click", (e) => {
+              location.href = `/boards/boardView/${board.num}`;
+            });
+
+            let userid = document.createElement("div");
+            userid.className = "col";
+            userid.textContent = board.userid;
+
+            let writedate = document.createElement("div");
+            writedate.className = "col";
+            writedate.textContent = board.writedate.substring(0, 10);
+
+            let readcount = document.createElement("div");
+            readcount.className = "col";
+            readcount.textContent = board.readcount;
+
+            row.append(num, title, userid, writedate, readcount);
+          });
+        } catch (err) {}
+      }
 
       async function getLoginUser() {
         try {
@@ -54,6 +104,20 @@
           console.log(err);
         }
       }
+
+      document
+        .getElementById("deleteMember")
+        .addEventListener("click", async (e) => {
+          if (confirm("진짜 탈퇴함?")) {
+            // location.href = "/members/deleteMember";
+            const result = await axios.get("/loginUser");
+            const loginUser = result.data;
+            await axios.delete(`/members/deleteMember/${loginUser.userid}`);
+            location.href = "/";
+          } else {
+            return;
+          }
+        });
     </script>
   </body>
 </html>

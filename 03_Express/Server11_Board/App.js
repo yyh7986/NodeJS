@@ -38,6 +38,7 @@ app.use("/", indexRouter);
 app.use("/members", membersRouter);
 app.use("/boards", boardsRouter);
 
+app.get("/favicon.ico", (req, res) => res.status(204));
 // 에러라우터
 app.use((req, res, next) => {
   console.log(404);
