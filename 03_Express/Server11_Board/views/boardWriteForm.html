@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/board.css" />
+  </head>
+  <body>
+    <div id="main_container">
+      <h2>게시글 등록</h2>
+      <div class="board">
+        <form
+          class="insertBoard"
+          method="post"
+          name="insertBoard"
+          enctype="multipart/form-data"
+          id="insertForm"
+        >
+          <div class="field">
+            <label>작성자</label>
+            <input type="text" name="userid" id="userid" readonly />
+          </div>
+          <div class="field">
+            <label>비밀번호</label>
+            <input style="flex: 2" type="password" name="pass" id="pass" />
+            <div style="flex: 2; margin-left: 20px">
+              게시물 수정 삭제시 필요합니다.
+            </div>
+          </div>
+          <div class="field">
+            <label>이메일</label>
+            <input type="text" name="email" id="email" readonly />
+          </div>
+          <div class="field">
+            <label>제목</label>
+            <input type="text" name="title" id="title" />
+          </div>
+          <div class="field">
+            <label>내용</label>
+            <textarea
+              name="content"
+              rows="10"
+              cols="100"
+              id="content"
+            ></textarea>
+          </div>
+          <div class="field">
+            <label>이미지</label>
+            <input type="file" name="image" id="image" />
+          </div>
+          <div class="field">
+            <label>이미지 미리보기</label>
+            <div style="flex: 4">
+              <img src="" id="previewimg" width="150" style="display: none" />
+              <input type="hidden" id="savefilename" name="savefilename" />
+              <input type="hidden" id="img" name="img" />
+              <div id="imagename"></div>
+              <div id="savename"></div>
+            </div>
+          </div>
+          <div class="field">
+            <input type="submit" value="작성완료" />
+          </div>
+        </form>
+      </div>
+    </div>
+    <script>
+      getLoginUser();
+
+      async function getLoginUser() {
+        try {
+          const result = await axios.get("/loginUser");
+          const loginUser = result.data;
+          document.getElementById("userid").value = loginUser.userid;
+          document.getElementById("email").value = loginUser.email;
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      document.getElementById("image").addEventListener("change", async (e) => {
+        const formData = new FormData();
+        formData.append("image", e.target.files[0]);
+        try {
+          const result = await axios.post("/boards/imageup", formData);
+          const res = result.data;
+          $previewImg = document.getElementById("previewimg");
+          $previewImg.src = "/img/" + res.savefilename;
+          $previewImg.style.display = "inline";
+          document.getElementById("savefilename").value = res.savefilename;
+          document.getElementById("img").value = res.image;
+          document.getElementById("imagename").innerHTML = res.image;
+          document.getElementById("savename").innerHTML = res.savefilename;
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+      document
+        .getElementById("insertForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData();
+          if (!e.target.pass.value) {
+            return alert("비밀번호를 입력하세요");
+          }
+          if (!e.target.title.value) {
+            return alert("제목을 입력하세요");
+          }
+          if (!e.target.content.value) {
+            return alert("내용을 입력하세요");
+          }
+
+          formData.append("userid", e.target.userid.value);
+          formData.append("pass", e.target.pass.value);
+          formData.append("email", e.target.email.value);
+          formData.append("title", e.target.title.value);
+          formData.append("content", e.target.content.value);
+          formData.append("image", e.target.image.value);
+          formData.append("img", e.target.img.value);
+          formData.append("savefilename", e.target.savefilename.value);
+
+          try {
+            await axios.post("/boards/writeBoard", formData);
+          } catch (err) {
+            console.error(err);
+          }
+          location.href = "/boards/boardList";
+        });
+    </script>
+  </body>
+</html>

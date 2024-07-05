@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/gram.css" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile-wrap">
+        <div class="profile">
+          <div class="field">
+            <label>
+              <span id="nickname"></span>
+              님 안녕하세요
+            </label>
+          </div>
+          <div class="field">
+            <div style="flex: 1; font-weight: bold; text-align: center">
+              팔로워<br />
+            </div>
+            <div style="flex: 1; font-weight: bold; text-align: center">
+              팔로잉<br />
+            </div>
+          </div>
+          <div class="btns">
+            <input
+              type="button"
+              value="회원정보상세"
+              onClick="location.href='/user/userdetail'"
+            />
+            <input
+              type="button"
+              value="로그아웃"
+              onClick="location.href='/user/logout'"
+            />
+            <input
+              type="button"
+              value="피드작성"
+              onClick="location.href='/feed/feedWriteForm'"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div id="feedlist"></div>
+    </div>
+    <script>
+      getLoginUser();
+      getFeedList();
+
+      async function getLoginUser() {
+        await axios
+          .get("/user/getLoginUser")
+          .then((res) => {
+            const loginUser = res.data;
+            document.getElementById("nickname").innerHTML = loginUser.nickname;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+
+        // try {
+        //   const result = await axios.get("/user/getLoginUser");
+        //   const loginUser = result.data;
+        //   $nickname.innerHTML = loginUser.nickname;
+        // } catch (error) {
+        //   console.error(error);
+        // }
+      }
+
+      async function getFeedList() {
+        await axios
+          .get("/feed/getFeedList")
+          .then((res) => {})
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    </script>
+  </body>
+</html>

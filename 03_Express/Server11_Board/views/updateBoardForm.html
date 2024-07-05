@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/board.css" />
+  </head>
+  <body>
+    <div id="main_container">
+      <h2>게시글 등록</h2>
+      <div class="board">
+        <form
+          class="insertBoard"
+          method="post"
+          name="updateBoard"
+          enctype="multipart/form-data"
+          id="updateForm"
+        >
+          <div class="field">
+            <label>작성자</label>
+            <input type="text" name="userid" id="userid" readonly />
+          </div>
+          <div class="field">
+            <label>비밀번호</label>
+            <input style="flex: 2" type="password" name="pass" id="pass" />
+            <div style="flex: 2; margin-left: 20px">
+              수정하려면 비밀번호를 입력하세요
+            </div>
+            <input type="hidden" id="oldpass" />
+          </div>
+          <div class="field">
+            <label>이메일</label>
+            <input type="text" name="email" id="email" readonly />
+          </div>
+          <div class="field">
+            <label>제목</label>
+            <input type="text" name="title" id="title" />
+          </div>
+          <div class="field">
+            <label>내용</label>
+            <textarea
+              name="content"
+              rows="10"
+              cols="100"
+              id="content"
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label>기존 이미지 미리보기</label>
+            <div style="flex: 4">
+              <img src="/img/" id="oldimage" width="150" />
+              <input
+                type="hidden"
+                id="oldsavefilename"
+                name="oldsavefilename"
+              />
+              <input type="hidden" id="oldimg" name="oldimg" />
+            </div>
+          </div>
+          <div class="field">
+            <label>이미지</label>
+            <input type="file" name="image" id="image" />
+          </div>
+          <div class="field">
+            <label>이미지 미리보기</label>
+            <div style="flex: 4">
+              <img src="" id="previewimg" width="150" style="display: none" />
+              <input type="hidden" id="savefilename" name="savefilename" />
+              <input type="hidden" id="img" name="img" />
+              <div id="imagename"></div>
+              <div id="savename"></div>
+            </div>
+          </div>
+          <div class="field">
+            <input type="submit" value="수정완료" />
+            <input type="button" value="돌아가기" onclick="history.back()" />
+          </div>
+        </form>
+      </div>
+    </div>
+    <script>
+      getBoard();
+
+      async function getBoard() {
+        try {
+          const result = await axios.get("/boards/getBoard");
+          const board = result.data;
+          document.getElementById("userid").value = board.userid;
+          document.getElementById("oldpass").value = board.pass;
+          document.getElementById("email").value = board.email;
+          document.getElementById("title").value = board.title;
+          document.getElementById("content").value = board.content;
+          document.getElementById("oldimage").src =
+            "/img/" + board.savefilename;
+          document.getElementById("oldsavefilename").value = board.savefilename;
+          document.getElementById("oldimg").value = board.image;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      document.getElementById("image").addEventListener("change", async (e) => {
+        const formData = new FormData();
+        formData.append("image", e.target.files[0]);
+        try {
+          const result = await axios.post("/boards/imageup", formData);
+          const res = result.data;
+          $previewImg = document.getElementById("previewimg");
+          $previewImg.src = "/img/" + res.savefilename;
+          $previewImg.style.display = "inline";
+          document.getElementById("savefilename").value = res.savefilename;
+          document.getElementById("img").value = res.image;
+          document.getElementById("imagename").innerHTML = res.image;
+          document.getElementById("savename").innerHTML = res.savefilename;
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+      document
+        .getElementById("updateForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const userid = e.target.userid.value;
+          const pass = e.target.pass.value;
+          const oldpass = e.target.oldpass.value;
+          const email = e.target.email.value;
+          const title = e.target.title.value;
+          const content = e.target.content.value;
+          const img = e.target.image.value;
+          const savefilename = e.target.savefilename.value;
+          const oldimg = e.target.oldimg.value;
+          const oldsavefilename = e.target.oldsavefilename.value;
+
+          if (!pass) {
+            return alert("비밀번호를 입력하세요");
+          }
+          if (pass != oldpass) {
+            return alert("비밀번호가 일치하지 않습니다");
+          }
+          if (!title) {
+            return alert("제목을 입력하세요");
+          }
+          if (!content) {
+            return alert("내용을 입력하세요");
+          }
+
+          const formData = new FormData();
+          formData.append("title", title);
+          formData.append("content", content);
+          formData.append("image", e.target.image.files[0]);
+
+          if (img) {
+            formData.append("img", img);
+            formData.append("savefilename", savefilename);
+          } else {
+            formData.append("img", oldimg);
+            formData.append("savefilename", oldsavefilename);
+          }
+
+          try {
+            const result = await axios.post("/boards/updateBoard", formData);
+            console.log(result.data);
+          } catch (error) {}
+          location.href = "/boards/boardViewWithoutCnt";
+        });
+    </script>
+  </body>
+</html>
