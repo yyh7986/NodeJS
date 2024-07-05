@@ -1,5 +1,5 @@
 // npm init
-// npm i express nodemon cookie-parser express-session
+// npm i express nodemon cookie-parser express-session mysql2 dotenv multer passport passport-kakao bcrypt 
 // npm start
 // "start": "nodemon app",
 // <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -19,6 +19,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 
+app.use("/", express.static(path.join(__dirname, "public")));
+app.use("/img", express.static(path.join(__dirname, "uploads")));
+
+/*
 app.use(cookieParser());
 app.use(
   session({
@@ -27,7 +31,7 @@ app.use(
     secret: "abcd", // 암호화 코드
   })
 );
-
+*/
 
 // 쿠키와 세션
 app.use(cookieParser(process.env.COOKIE_SECRET));
