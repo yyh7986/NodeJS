@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 
 // const fs = require("fs");
 // const multer = require("multer");
+const passport = require("passport");
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,11 @@ app.use(
     },
   })
 );
+
+const passportConfig = require("./passport"); // passport 폴더의 index.js를 require
+passportConfig();
+app.use(passport.initialize());
+app.use(passport.session());
 
 const indexRouter = require("./Routers/index");
 const userRouter = require("./Routers/user");

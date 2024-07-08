@@ -30,7 +30,7 @@
         </div>
         <div class="field">
           <label>이미지 미리보기</label>
-          <img id="img-preview" src="" sytle="display:none;" />
+          <img id="img-preview" src="" display="none" />
           <input id="savefilename" type="hidden" name="savefilename" />
           <input id="image" type="text" name="image" />
         </div>
@@ -58,35 +58,27 @@
           formData.append("image", e.target.image.value);
           formData.append("savefilename", e.target.savefilename.value);
 
-          await axios
-            .post("/feed/writeFeed", formData)
-            .then((res) => {
-              location.href = "/feed/mainList";
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-
-          // try {
-          //   const result = await axios.post("/feed/writeFeed", formData);
-          //   location.href = "/feed/mainList";
-          // } catch (err) {
-          //   console.error(err);
-          // }
+          try {
+            const result = await axios.post("/feed/writeFeed", formData);
+            location.href = "/feed/mainList";
+          } catch (err) {
+            console.error(err);
+          }
         });
 
       document.getElementById("img").addEventListener("change", async (e) => {
         const formData = new FormData();
-        formData.append("img", e.target.img.files[0]);
-        console.log(e.target.img.files[0]);
+        formData.append("img", e.target.files[0]);
+        // console.log(e.target.img.files[0]);
 
         await axios
           .post("/feed/imageUpload", formData)
           .then((res) => {
-            document.getElementById("savefilename").value = res.savefilename;
-            document.getElementById("image").value = res.image;
+            document.getElementById("savefilename").value =
+              res.data.savefilename;
+            document.getElementById("image").value = res.data.image;
             document.getElementById("img-preview").src =
-              "/img/" + res.savefilename;
+              "/img/" + res.data.savefilename;
             document.getElementById("img-preview").display = "inline";
             document.getElementById("img-preview").style.width = "200px";
           })
